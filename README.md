@@ -2,7 +2,7 @@
 
 # Lets starts with simple Plots
 
-# installing required library
+# installing required libraries
 from pip._internal import main
 main(['install','numpy'])
 
