@@ -1,18 +1,21 @@
-# import packages
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-#upload file in df
 df = pd.read_excel(r'C:\Users\Ajith\Desktop\Techies\survey.xlsx')
 
-#grouping df abi/bachelor/master
-df_abi= df[df['Was machen Sie zurzeit?'] == 'Abitur']
-df_bachelor= df[df['Was machen Sie zurzeit?'] == 'Bachelor Studium']
-df_master= df[df['Was machen Sie zurzeit?'] == 'Master Studium']
+df_abi = df[df['Status'] == 'Abitur']
+df_bachelor = df[df['Status'] == 'Bachelor Studium']
+df_master = df[df['Status'] == 'Master Studium']
 
-#Participants=P printing p
+# Participants=P
 P1 = "Number of Highschool students: " + str(df_abi.shape[0])
 P2 = "Number of Bachelor students: " + str(df_bachelor.shape[0])
 P3 = "Number of Master students: " + str(df_master.shape[0])
-print(P1 + " \n" + P2 + " \n" + P3 )
+
+print(P1 + " \n" + P2 + " \n" + P3)
+
+df_bachelor.loc[df_bachelor['bachelor_study']=='Studium nicht aufgelistet','bachelor_study']=df_bachelor['bachelor_study2']
+df_master.loc[df_master['master_study']=='Studium nicht aufgelistet','master_study']=df_master['master_study2']
+print(df_bachelor['bachelor_study'])
+print(df_master['master_study'])
