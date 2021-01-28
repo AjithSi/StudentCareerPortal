@@ -15,7 +15,15 @@ P3 = "Number of Master students: " + str(df_master.shape[0])
 
 print(P1 + " \n" + P2 + " \n" + P3)
 
+#combining two study program columns 
+
 df_bachelor.loc[df_bachelor['bachelor_study']=='Studium nicht aufgelistet','bachelor_study']=df_bachelor['bachelor_study2']
 df_master.loc[df_master['master_study']=='Studium nicht aufgelistet','master_study']=df_master['master_study2']
+
+#print combined columns
 print(df_bachelor['bachelor_study'])
 print(df_master['master_study'])
+
+#drop unecessary columns in df_abi
+#drop unecessary columns in df_bachelor
+#drop unecessary columns in df_master
