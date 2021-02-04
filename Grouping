@@ -27,3 +27,27 @@ print(df_master['master_study'])
 #drop unecessary columns in df_abi
 #drop unecessary columns in df_bachelor
 #drop unecessary columns in df_master
+
+
+baselist = df_bachelor['bachelor_study'].tolist()
+words = frozenset(baselist)
+
+# count similar strings in column
+
+counted_words = []
+cw= []
+cn= []
+for word in words:
+    counted_words.append(
+        (word, baselist.count(word))
+    )
+    cw.append(word)
+    cn.append(baselist.count(word))
+counted_words.sort(key = operator.itemgetter(1))
+
+for item in counted_words:
+    print ("%-10s %i" % item)
+    
+#plot all bsc studay program 
+plt.bar(cw,cn)
+plt.show()
