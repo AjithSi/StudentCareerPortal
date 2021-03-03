@@ -1,0 +1,139 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+import operator
+
+df = pd.read_excel((r'C:\Temp\survey.xlsx'))
+
+# Function of stacked bar charts of Demography
+def Demogtaphy(X_ax,Legend_1,Legend_2,Color_1,Color_2,Titl):
+    # Demography Weiblich
+    Logic_df_M = df['Geschlecht'] == 'Weiblich'
+    sub_df_M = df[Logic_df_M]
+    baselist = sub_df_M[X_ax].tolist()
+    words = frozenset(baselist)
+    print (words)
+    counted_words = []
+    cw1= []
+    cn1= []
+    for word in words:
+        counted_words.append((word, baselist.count(word)))
+        cw1.append(word)
+        cn1.append(baselist.count(word))
+
+    # Demography Männlich
+    Logic_df_M = df['Geschlecht'] == 'Männlich'
+    sub_df_M = df[Logic_df_M]
+    baselist = sub_df_M[X_ax].tolist()
+    words = frozenset(baselist)
+    print (words)
+    counted_words = []
+    cw2= []
+    cn2= []
+    for word in words:
+        counted_words.append((word, baselist.count(word)))
+        cw2.append(word)
+        cn2.append(baselist.count(word))
+        counted_words.sort(key = operator.itemgetter(1))
+    print(cw2,cn2)
+    zip_itr_2 = zip(cw2,cn2)
+    dict_M    = dict(zip_itr_2)
+    print(dict_M)
+
+    # Equalization of the cw1 and cw2
+    cw2_new = []
+    cn2_new = []
+
+    for word in cw1:
+
+        if word in dict_M:
+            cw2_new.append(word)
+            cn2_new.append(dict_M[word])
+        else:
+            cw2_new.append(word)
+            cn2_new.append(0)
+
+
+    # Stacked bar chart of Demography
+    width = 0.7       # the width of the bars
+
+    fig, ax = plt.subplots()
+
+    ax.bar(cw2_new,cn2_new,width,label = Legend_1, color= Color_1)
+    ax.bar(cw1,cn1,width,label = Legend_2, bottom=cn2_new, color=Color_2)
+
+    ax.legend()
+    plt.title(Titl)
+    plt.ylabel('No. of applicants')
+    plt.xticks(rotation=-15)
+    plt.savefig(r'C:\Temp\Demography.png')
+    plt.show()
+
+
+# Applying the Demography function
+Demogtaphy('Bundesland','Male','Female','#6495ED','#FB607F',"Participants demography by Federal states, no. of males, and no. of females")
+Demogtaphy('Altersgruppe','Male','Female','#6495ED','#FB607F',"Age group of participants")
+Demogtaphy('Status','Male','Female','#6495ED','#FB607F',"Status of Study program")
+#_______________________________________________________________________
+
+# Bachelor Study and future plans
+
+# Bachelor future --> Masters
+Logic_df_M = df['bachelor_future'] == 'Master Studium'
+sub_df_M = df[Logic_df_M]
+baselist = sub_df_M['bachelor_study'].tolist()
+words = frozenset(baselist)
+print (words)
+counted_words = []
+cw1= []
+cn1= []
+for word in words:
+    counted_words.append((word, baselist.count(word)))
+    cw1.append(word)
+    cn1.append(baselist.count(word))
+
+# Bachelor future --> Job
+Logic_df_M = df['bachelor_future'] == 'Job / Unternehmertum'
+sub_df_M = df[Logic_df_M]
+baselist = sub_df_M['bachelor_study'].tolist()
+words = frozenset(baselist)
+print (words)
+counted_words = []
+cw2= []
+cn2= []
+for word in words:
+    counted_words.append((word, baselist.count(word)))
+    cw2.append(word)
+    cn2.append(baselist.count(word))
+zip_itr_2 = zip(cw2,cn2)
+dict_M    = dict(zip_itr_2)
+print(dict_M)
+
+# Equalization of the cw1 and cw2
+cw2_new = []
+cn2_new = []
+
+for word in cw1:
+
+    if word in dict_M:
+        cw2_new.append(word)
+        cn2_new.append(dict_M[word])
+    else:
+        cw2_new.append(word)
+        cn2_new.append(0)
+
+# Stacked bar chart of Demography
+width = 0.7       # the width of the bars
+
+fig2, ax2 = plt.subplots()
+
+ax2.bar(cw2_new,cn2_new,width,label = 'Job / Unternehmertum', color='#FF7F50')
+ax2.bar(cw1,cn1,width,label = 'Master Studium', bottom=cn2_new, color='#3CB371')
+
+ax2.legend()
+plt.title("Future plans of Students who are currenting doing their Bachelors degrees")
+plt.ylabel('No. of applicants')
+plt.xticks(rotation=-15)
+plt.savefig(r'C:\Temp\Demography.png')
+plt.show()
+#_______________________________________________________________________________
