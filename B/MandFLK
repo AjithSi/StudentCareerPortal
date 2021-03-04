@@ -1,0 +1,142 @@
+import datetime
+import matplotlib.pyplot as plt
+import pandas as pd
+from matplotlib.backends.backend_pdf import PdfPages
+import operator
+
+df = pd.read_excel(r'C:\Users\Ajith\Desktop\Techies\survey.xlsx')
+
+df_abi = df[df['Status'] == 'Abitur']
+
+df_bachelor = df[df['Status'] == 'Bachelor Studium']
+df_master = df[df['Status'] == 'Master Studium']
+
+# Participants=P
+P1 = "Number of Highschool students: " + str(df_abi.shape[0])
+P2 = "Number of Bachelor students: " + str(df_bachelor.shape[0])
+P3 = "Number of Master students: " + str(df_master.shape[0])
+
+print(P1 + " \n" + P2 + " \n" + P3)
+
+# combining two study program columns
+
+df_bachelor.loc[df_bachelor['bachelor_study'] == 'Studium nicht aufgelistet', 'bachelor_study'] = df_bachelor[
+    'bachelor_study2']
+df_master.loc[df_master['master_study'] == 'Studium nicht aufgelistet', 'master_study'] = df_master['master_study2']
+
+"""
+#print combined columns
+print(df_bachelor['bachelor_study'])
+print(df_master['master_study'])
+"""
+
+# print(df_bachelor.columns)
+df_bachelor.drop(['Ausbildung', 'Ausbildung_year', 'Ausbildung_future'], axis=1)
+
+print('--------------------------------------------------------')
+
+#takes dataframe and a string as column and gives the differnet entities in the columns as a list 'cw'
+def different_words(dataframe, column):
+    baselist = dataframe[column].tolist()
+    words = frozenset(baselist)
+    counted_words = []
+    cw = []
+    cn = []
+    for word in words:
+        counted_words.append((word, baselist.count(word)))
+        cw.append(word)
+        cn.append(baselist.count(word))
+        counted_words.sort(key=operator.itemgetter(1))
+    return cw
+
+#takes dataframe and a string as column and gives the differnet number of entities in the columns as a list 'cn'
+def count_different_words(dataframe, column):
+    baselist = dataframe[column].tolist()
+    words = frozenset(baselist)
+    counted_words = []
+    cw = []
+    cn = []
+    for word in words:
+        counted_words.append((word, baselist.count(word)))
+        cw.append(word)
+        cn.append(baselist.count(word))
+        counted_words.sort(key=operator.itemgetter(1))
+    return cn
+
+
+print('--------------------------------------------------------')
+#all bachelor study program
+bachelor_study_list= different_words(df_bachelor, 'bachelor_study')
+#all master study program
+master_study_list = different_words(df_master, 'master_study')
+#print(bachelor_study_list)
+
+print('--------------------------------------------------------')
+
+#takes a studyprogramm and gives you the correlation with their flk
+def corBachelorFLK(x):
+    a = df_bachelor['bachelor_study'] == x
+    df_bachelor_tmp = df_bachelor[a]
+    cw = different_words(df_bachelor_tmp,'bachelor_abitur_flk')
+    cn = count_different_words(df_bachelor_tmp,'bachelor_abitur_flk')
+
+    plt.bar(cw, cn)
+    plt.title('Correlation between ' + x + ' and First LK')
+    plt.ylabel('Investigated students')
+    plt.xlabel('Subjects')
+    plt.savefig('Correlation between bachelor study ' + x + ' and FLK.png', bbox_inches='tight')
+    plt.close()
+
+#takes a bachelor studyprogramm and gives you the correlation with their slk
+def corBachelorSLK(x):
+    a = df_bachelor['bachelor_study'] == x
+    df_bachelor_tmp = df_bachelor[a]
+    cw = different_words(df_bachelor_tmp, 'bachelor_abitur_slk')
+    cn = count_different_words(df_bachelor_tmp, 'bachelor_abitur_slk')
+
+    plt.bar(cw, cn)
+    plt.title('Correlation between ' + x + ' and Second LK')
+    plt.ylabel('Investigated students')
+    plt.xlabel('Subjects')
+    plt.savefig('Correlation between bachelor study ' + x + ' and SLK.png', bbox_inches='tight')
+    plt.close()
+
+#takes a Master studyprogramm and gives you the correlation with their flk
+def corMasterFLK(x):
+    a = df_master['master_study'] == x
+    df_master_tmp = df_master[a]
+    cw = different_words(df_master_tmp, 'master_abitur_flk')
+    cn = count_different_words(df_master_tmp, 'master_abitur_flk')
+
+    plt.bar(cw, cn)
+    plt.title('Correlation between ' + x + ' and First LK')
+    plt.ylabel('Investigated students')
+    plt.xlabel('Subjects')
+    plt.savefig('Correlation between Master study ' + x + ' and FLK.png', bbox_inches='tight')
+    plt.close()
+
+#takes a master studyprogramm and gives you the correlation with their slk
+def corMasterSLK(x):
+    a = df_master['master_study'] == x
+    df_master_tmp = df_master[a]
+    cw = different_words(df_master_tmp, 'master_abitur_slk')
+    cn = count_different_words(df_master_tmp, 'master_abitur_slk')
+
+    plt.bar(cw, cn)
+    plt.title('Correlation between ' + x + ' and Second LK')
+    plt.ylabel('Investigated students')
+    plt.xlabel('Subjects')
+    plt.savefig('Correlation between Master study ' + x + ' and SLK.png', bbox_inches='tight')
+    plt.close()
+
+def main():
+    for item in bachelor_study_list:
+        corBachelorFLK(item)
+    for item in master_study_list:
+        corMasterFLK(item)
+    for item in master_study_list:
+        corMasterSLK(item)
+    for item in bachelor_study_list:
+        corBachelorSLK(item)
+
+main()
