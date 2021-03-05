@@ -1,0 +1,280 @@
+import matplotlib.pyplot as plt
+import pandas as pd
+import operator
+
+#import xlsx file
+df = pd.read_excel(r'C:\Users\Ajith\Desktop\Techies\survey.xlsx')
+
+#seperate main df to three df divided by Abitur, Bachelor and Master
+df_abi = df[df['Status'] == 'Abitur']
+df_bachelor = df[df['Status'] == 'Bachelor Studium']
+df_master = df[df['Status'] == 'Master Studium']
+
+# Participants=P
+P1 = "Number of Highschool students: " + str(df_abi.shape[0])
+P2 = "Number of Bachelor students: " + str(df_bachelor.shape[0])
+P3 = "Number of Master students: " + str(df_master.shape[0])
+#Show us the participants
+print(P1 + " \n" + P2 + " \n" + P3)
+
+# combining two study program columns
+df_bachelor.loc[df_bachelor['bachelor_study'] == 'Studium nicht aufgelistet', 'bachelor_study'] = df_bachelor[
+    'bachelor_study2']
+df_master.loc[df_master['master_study'] == 'Studium nicht aufgelistet', 'master_study'] = df_master['master_study2']
+
+# drop column content
+df_bachelor.drop(['Ausbildung', 'Ausbildung_year', 'Ausbildung_future'], axis=1)
+
+# takes dataframe and a string (column name) -> gives the different entities in the columns as a list 'cw'
+def different_words(dataframe, column):
+    baselist = dataframe[column].tolist()
+    words = frozenset(baselist)
+    counted_words = []
+    cw = []
+    cn = []
+    for word in words:
+        counted_words.append((word, baselist.count(word)))
+        cw.append(word)
+        cn.append(baselist.count(word))
+        counted_words.sort(key=operator.itemgetter(1))
+    return cw
+
+# takes dataframe and a string (column name) ->  gives the differnet number(sum) of entities in the columns as a list 'cn'
+def count_different_words(dataframe, column):
+    baselist = dataframe[column].tolist()
+    words = frozenset(baselist)
+    counted_words = []
+    cw = []
+    cn = []
+    for word in words:
+        counted_words.append((word, baselist.count(word)))
+        cw.append(word)
+        cn.append(baselist.count(word))
+        counted_words.sort(key=operator.itemgetter(1))
+    return cn
+
+# all bachelor study program
+bachelor_study_list= different_words(df_bachelor, 'bachelor_study')
+# all master study program
+master_study_list = different_words(df_master, 'master_study')
+
+# takes a bachelor studyprogram -> you get the correlation with their flk(first-leistungskurs)
+def corBachelorFLK(x):
+    a = df_bachelor['bachelor_study'] == x
+    df_bachelor_tmp = df_bachelor[a]
+    cw = different_words(df_bachelor_tmp,'bachelor_abitur_flk')
+    cn = count_different_words(df_bachelor_tmp,'bachelor_abitur_flk')
+
+    plt.bar(cw, cn)
+    plt.title('Correlation between ' + x + ' and First LK')
+    plt.ylabel('Investigated students')
+    plt.xlabel('Subjects')
+    plt.savefig('Correlation between bachelor study ' + x + ' and FLK.png', bbox_inches='tight')
+    plt.close()
+
+# takes a bachelor studyprogram -> you get the correlation with their slk(second-leistungskurs)
+def corBachelorSLK(x):
+    a = df_bachelor['bachelor_study'] == x
+    df_bachelor_tmp = df_bachelor[a]
+    cw = different_words(df_bachelor_tmp, 'bachelor_abitur_slk')
+    cn = count_different_words(df_bachelor_tmp, 'bachelor_abitur_slk')
+
+    plt.bar(cw, cn)
+    plt.title('Correlation between ' + x + ' and Second LK')
+    plt.ylabel('Investigated students')
+    plt.xlabel('Subjects')
+    plt.savefig('Correlation between bachelor study ' + x + ' and SLK.png', bbox_inches='tight')
+    plt.close()
+
+# takes a master studyprogram -> you get the correlation with their flk(first-leistungskurs)
+def corMasterFLK(x):
+    a = df_master['master_study'] == x
+    df_master_tmp = df_master[a]
+    cw = different_words(df_master_tmp, 'master_abitur_flk')
+    cn = count_different_words(df_master_tmp, 'master_abitur_flk')
+
+    plt.bar(cw, cn)
+    plt.title('Correlation between ' + x + ' and First LK')
+    plt.ylabel('Investigated students')
+    plt.xlabel('Subjects')
+    plt.savefig('Correlation between Master study ' + x + ' and FLK.png', bbox_inches='tight')
+    plt.close()
+
+# takes a master studyprogram -> you get the correlation with their slk(second-leistungskurs)
+def corMasterSLK(x):
+    a = df_master['master_study'] == x
+    df_master_tmp = df_master[a]
+    cw = different_words(df_master_tmp, 'master_abitur_slk')
+    cn = count_different_words(df_master_tmp, 'master_abitur_slk')
+
+    plt.bar(cw, cn)
+    plt.title('Correlation between ' + x + ' and Second LK')
+    plt.ylabel('Investigated students')
+    plt.xlabel('Subjects')
+    plt.savefig('Correlation between Master study ' + x + ' and SLK.png', bbox_inches='tight')
+    plt.close()
+
+
+# Function for analyzing study programs of bachelor students according to gender
+## logic of the function is same as previously used function. Just the variables and type of graph are changed
+
+def geschlecht(x):
+    a = df_bachelor['Geschlecht'] == x
+    df_bachelor_tmp = df_bachelor[a]
+    cw = different_words(df_bachelor_tmp, 'bachelor_study')
+    cn = count_different_words(df_bachelor_tmp, 'bachelor_study')
+
+    pie = plt.pie(cn, autopct='%1.1f%%', pctdistance=0.85)
+    plt.legend(pie[0], cw, loc="center left", bbox_to_anchor=(1, 0, 0.5, 1))
+    plt.title('Bachelor study Programs ' + x)
+    plt.show()
+
+# Function for analyzing future choices of bachelor students
+## logic of the function is same as previously used function. Just the variables and type of graph are changed
+
+def future_bachelor():
+    cw = different_words(df_bachelor, 'bachelor_future')
+    cn = count_different_words(df_bachelor, 'bachelor_future')
+
+    explode = (0.1, 0.1, 0.1, 0.1)
+    plt.pie(cn, labels=cw, explode=explode, autopct='%1.1f%%', shadow=True, startangle=90)
+    plt.title('Future Preferences of Bachelor Students')
+    plt.show()
+
+# Function for analyzing future industry preferences of bachelor students according to gender
+## logic of the function is same as previously used function. Just the variables and type of graph are changed
+
+def future_industry(x):
+    a = df_bachelor['Geschlecht'] == x
+    df_bachelor_tmp = df_bachelor[a]
+    cw = different_words(df_bachelor_tmp, 'future_work_field')
+    cn = count_different_words(df_bachelor_tmp, 'future_work_field')
+
+    pie = plt.pie(cn, autopct='%1.1f%%', startangle=90, pctdistance=0.85)
+    plt.legend(pie[0], cw, loc="center left", bbox_to_anchor = (1, 0, 0.5, 1))
+    #drawing a circle in the center for donut chart
+    centre_circle = plt.Circle((0,0),0.70,fc='white')
+    fig = plt.gcf()
+    fig.gca().add_artist(centre_circle)
+    plt.title ('Industrial preferences of bachelor students - ' + x)
+    plt.show()
+
+# Function of stacked bar charts of Demography
+## analysing the demography from the survey participants
+### defining two different functions to male/female
+##### logic of the function is same as previously used function. Just the variables and type of graph are changed
+
+def Demogtaphy(X_ax,Legend_1,Legend_2,Color_1,Color_2,Titl):
+    # Demography Weiblich
+    Logic_df_M = df['Geschlecht'] == 'Weiblich'
+    sub_df_M = df[Logic_df_M]
+
+    cw1 = different_words(sub_df_M, X_ax)
+    cn1 = count_different_words(sub_df_M, X_ax)
+
+    # Demography Männlich
+    Logic_df_M = df['Geschlecht'] == 'Männlich'
+    sub_df_M = df[Logic_df_M]
+
+    cw2 = different_words(sub_df_M, X_ax)
+    cn2 = count_different_words(sub_df_M, X_ax)
+
+    zip_itr_2 = zip(cw2,cn2)
+    dict_M    = dict(zip_itr_2)
+
+    # Equalization of the cw1 and cw2
+    ## converting the second list into a dict appending it, then return it back to a list
+    ### logic created to make stack bar chart
+    cw2_new = []
+    cn2_new = []
+
+    for word in cw1:
+
+        if word in dict_M:
+            cw2_new.append(word)
+            cn2_new.append(dict_M[word])
+        else:
+            cw2_new.append(word)
+            cn2_new.append(0)
+
+
+    # Stacked bar chart of Demography
+    width = 0.7       # the width of the bars
+
+    fig, ax = plt.subplots()
+
+    ax.bar(cw2_new,cn2_new,width,label = Legend_1, color= Color_1)
+    ax.bar(cw1,cn1,width,label = Legend_2, bottom=cn2_new, color=Color_2)
+
+    ax.legend()
+    plt.title(Titl)
+    plt.ylabel('No. of applicants')
+    plt.xticks(rotation=-15)
+    plt.show()
+
+# correlation between bachelor study program and future plan
+## Bachelor students future --> Masters
+def bachelor_future_master():
+    Logic_df_M = df['bachelor_future'] == 'Master Studium'
+    sub_df_M = df[Logic_df_M]
+    cw1 = different_words(sub_df_M, 'bachelor_study')
+    cn1 = count_different_words(sub_df_M, 'bachelor_study')
+
+    ## Bachelor future --> Job
+
+    Logic_df_M = df['bachelor_future'] == 'Job / Unternehmertum'
+    sub_df_MM = df[Logic_df_M]
+    cw2 = different_words(sub_df_MM, 'bachelor_study')
+    cn2 = count_different_words(sub_df_MM, 'bachelor_study')
+    zip_itr_2 = zip(cw2,cn2)
+    dict_M    = dict(zip_itr_2)
+
+    # Equalization of the cw1 and cw2
+    cw2_new = []
+    cn2_new = []
+
+    for word in cw1:
+
+        if word in dict_M:
+            cw2_new.append(word)
+            cn2_new.append(dict_M[word])
+        else:
+            cw2_new.append(word)
+            cn2_new.append(0)
+
+    # Stacked bar chart of Demography
+    width = 0.7       # the width of the bars
+
+    fig2, ax2 = plt.subplots()
+
+    ax2.bar(cw2_new,cn2_new,width,label = 'Job / Unternehmertum', color='#FF7F50')
+    ax2.bar(cw1,cn1,width,label = 'Master Studium', bottom=cn2_new, color='#3CB371')
+
+    ax2.legend()
+    plt.title("Future plans of Students who are currenting doing their Bachelors degrees")
+    plt.ylabel('No. of applicants')
+    plt.xticks(rotation=-15)
+    plt.show()
+
+#call all functions
+
+geschlecht('Männlich')
+geschlecht('Weiblich')
+future_bachelor()
+future_industry('Männlich')
+future_industry('Weiblich')
+
+Demogtaphy('Bundesland', 'Male', 'Female', '#6495ED', '#FB607F',
+           "Participants demography by Federal states, No. of males, and No. of females")
+Demogtaphy('Altersgruppe', 'Male', 'Female', '#6495ED', '#FB607F', "Age group of participants")
+Demogtaphy('Status', 'Male', 'Female', '#6495ED', '#FB607F', "Status of Study program")
+bachelor_future_master()
+
+for item in bachelor_study_list:
+    corBachelorFLK(item)
+for item in master_study_list:
+    corMasterFLK(item)
+for item in master_study_list:
+    corMasterSLK(item)
+for item in bachelor_study_list:
+    corBachelorSLK(item)
