@@ -65,12 +65,15 @@ def corBachelorFLK(x):
     cw = different_words(df_bachelor_tmp,'bachelor_abitur_flk')
     cn = count_different_words(df_bachelor_tmp,'bachelor_abitur_flk')
 
-    plt.bar(cw, cn)
-    plt.title('Correlation between ' + x + ' and First LK')
-    plt.ylabel('Investigated students')
-    plt.xlabel('Subjects')
-    plt.savefig('Correlation between bachelor study ' + x + ' and FLK.png', bbox_inches='tight')
-    plt.close()
+    if len(cn) > 1:
+        plt.bar(cw, cn)
+        plt.title('Correlation between ' + x + ' and First LK')
+        plt.ylabel('Investigated students')
+        plt.xlabel('Subjects')
+        if len(cn) > 5:
+            plt.xticks(rotation=20)
+        plt.savefig('Correlation between bachelor study ' + x + ' and FLK.png')
+        plt.close()
 
 # takes a bachelor studyprogram -> you get the correlation with their slk(second-leistungskurs)
 def corBachelorSLK(x):
@@ -78,13 +81,16 @@ def corBachelorSLK(x):
     df_bachelor_tmp = df_bachelor[a]
     cw = different_words(df_bachelor_tmp, 'bachelor_abitur_slk')
     cn = count_different_words(df_bachelor_tmp, 'bachelor_abitur_slk')
-
-    plt.bar(cw, cn)
-    plt.title('Correlation between ' + x + ' and Second LK')
-    plt.ylabel('Investigated students')
-    plt.xlabel('Subjects')
-    plt.savefig('Correlation between bachelor study ' + x + ' and SLK.png', bbox_inches='tight')
-    plt.close()
+ 
+    if len(cn) > 1:
+        plt.bar(cw, cn)
+        plt.title('Correlation between ' + x + ' and Second LK')
+        plt.ylabel('Investigated students')
+        plt.xlabel('Subjects')
+        if len(cn) > 5:
+            plt.xticks(rotation=20)
+        plt.savefig('Correlation between bachelor study ' + x + ' and SLK.png')
+        plt.close()
 
 # takes a master studyprogram -> you get the correlation with their flk(first-leistungskurs)
 def corMasterFLK(x):
@@ -93,12 +99,15 @@ def corMasterFLK(x):
     cw = different_words(df_master_tmp, 'master_abitur_flk')
     cn = count_different_words(df_master_tmp, 'master_abitur_flk')
 
-    plt.bar(cw, cn)
-    plt.title('Correlation between ' + x + ' and First LK')
-    plt.ylabel('Investigated students')
-    plt.xlabel('Subjects')
-    plt.savefig('Correlation between Master study ' + x + ' and FLK.png', bbox_inches='tight')
-    plt.close()
+    if len(cn) > 1:
+        plt.bar(cw, cn)
+        plt.title('Correlation between ' + x + ' and First LK')
+        plt.ylabel('Investigated students')
+        plt.xlabel('Subjects')
+        if len(cn) > 5:
+            plt.xticks(rotation=20)
+        plt.savefig('Correlation between Master study ' + x + ' and FLK.png')
+        plt.close()
 
 # takes a master studyprogram -> you get the correlation with their slk(second-leistungskurs)
 def corMasterSLK(x):
@@ -107,12 +116,15 @@ def corMasterSLK(x):
     cw = different_words(df_master_tmp, 'master_abitur_slk')
     cn = count_different_words(df_master_tmp, 'master_abitur_slk')
 
-    plt.bar(cw, cn)
-    plt.title('Correlation between ' + x + ' and Second LK')
-    plt.ylabel('Investigated students')
-    plt.xlabel('Subjects')
-    plt.savefig('Correlation between Master study ' + x + ' and SLK.png', bbox_inches='tight')
-    plt.close()
+    if len(cn) > 1:
+        plt.bar(cw, cn)
+        plt.title('Correlation between ' + x + ' and Second LK')
+        plt.ylabel('Investigated students')
+        plt.xlabel('Subjects')
+        if len(cn) > 5:
+            plt.xticks(rotation=20)
+        plt.savefig('Correlation between Master study ' + x + ' and SLK.png')
+        plt.close()
 
 
 # Function for analyzing study programs of bachelor students according to gender
@@ -127,7 +139,8 @@ def geschlecht(x):
     pie = plt.pie(cn, autopct='%1.1f%%', pctdistance=0.85)
     plt.legend(pie[0], cw, loc="center left", bbox_to_anchor=(1, 0, 0.5, 1))
     plt.title('Bachelor study Programs ' + x)
-    plt.show()
+    plt.savefig('Bachelor study Programs ' + x)
+    plt.close()
 
 # Function for analyzing future choices of bachelor students
 ## logic of the function is same as previously used function. Just the variables and type of graph are changed
@@ -139,7 +152,8 @@ def future_bachelor():
     explode = (0.1, 0.1, 0.1, 0.1)
     plt.pie(cn, labels=cw, explode=explode, autopct='%1.1f%%', shadow=True, startangle=90)
     plt.title('Future Preferences of Bachelor Students')
-    plt.show()
+    plt.savefig('Future Preferences of Bachelor Students')
+    plt.close()
 
 # Function for analyzing future industry preferences of bachelor students according to gender
 ## logic of the function is same as previously used function. Just the variables and type of graph are changed
@@ -156,8 +170,10 @@ def future_industry(x):
     centre_circle = plt.Circle((0,0),0.70,fc='white')
     fig = plt.gcf()
     fig.gca().add_artist(centre_circle)
-    plt.title ('Industrial preferences of bachelor students - ' + x)
-    plt.show()
+    plt.title('Industrial preferences of bachelor students - ' + x)
+    plt.savefig('Industrial preferences of bachelor students - ' + x)
+    plt.close()
+
 
 # Function of stacked bar charts of Demography
 ## analysing the demography from the survey participants
@@ -211,6 +227,7 @@ def Demogtaphy(X_ax,Legend_1,Legend_2,Color_1,Color_2,Titl):
     plt.ylabel('No. of applicants')
     plt.xticks(rotation=-15)
     plt.show()
+    plt.close()
 
 # correlation between bachelor study program and future plan
 ## Bachelor students future --> Masters
@@ -255,6 +272,7 @@ def bachelor_future_master():
     plt.ylabel('No. of applicants')
     plt.xticks(rotation=-15)
     plt.show()
+    plt.close()
 
 #call all functions
 
@@ -264,10 +282,9 @@ future_bachelor()
 future_industry('Männlich')
 future_industry('Weiblich')
 
-Demogtaphy('Bundesland', 'Male', 'Female', '#6495ED', '#FB607F',
-           "Participants demography by Federal states, No. of males, and No. of females")
-Demogtaphy('Altersgruppe', 'Male', 'Female', '#6495ED', '#FB607F', "Age group of participants")
-Demogtaphy('Status', 'Male', 'Female', '#6495ED', '#FB607F', "Status of Study program")
+Demogtaphy('Bundesland', 'Male', 'Female', '#6495ED', '#FB607F','Demography by states, No. of males,and No. of females')
+Demogtaphy('Altersgruppe', 'Male', 'Female', '#6495ED', '#FB607F', 'Age group of participants')
+Demogtaphy('Status', 'Male', 'Female', '#6495ED', '#FB607F', 'Status of Study program')
 bachelor_future_master()
 
 for item in bachelor_study_list:
